@@ -113,6 +113,11 @@
                             <constraint firstItem="FNA-z5-7Zb" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="Xef-RM-F5Z"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="counterLabel" destination="fRf-8j-p9r" id="iOa-7H-MrM"/>
+                        <outlet property="imageView" destination="Ra3-PI-DpK" id="vB8-m7-NPq"/>
+                        <outlet property="textLabel" destination="1ic-Tk-yYv" id="FEG-Hb-YTi"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
