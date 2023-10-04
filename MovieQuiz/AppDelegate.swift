@@ -6,10 +6,14 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
+        // Точка переопределения для настройки после запуска приложения.
+        // sleep(3)            // Задержка показа LaunchScreen в 3с.
+        print("Hello world for brach to merge! Try number 4")
         return true
     }
 
     // MARK: UISceneSession Lifecycle
+    // test1
 
     func application(
         _ application: UIApplication,
