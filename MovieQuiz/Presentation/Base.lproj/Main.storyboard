@@ -25,7 +25,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="FNA-z5-7Zb">
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="FNA-z5-7Zb">
                                 <rect key="frame" x="20" y="69" width="390" height="829"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="gGg-9p-wE8">
@@ -46,14 +46,19 @@
                                         </subviews>
                                     </stackView>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ra3-PI-DpK" userLabel="Preview Image">
-                                        <rect key="frame" x="0.0" y="23.666666666666686" width="390" height="585"/>
+                                        <rect key="frame" x="0.0" y="59" width="390" height="585"/>
                                         <color key="backgroundColor" name="YP White"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="Ra3-PI-DpK" secondAttribute="height" multiplier="2:3" id="9jg-9z-1Qc"/>
                                         </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="20"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Рейтинг этого фильма меньше, чем 5?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1ic-Tk-yYv" userLabel="Question Label">
-                                        <rect key="frame" x="0.0" y="608.66666666666663" width="390" height="160.33333333333337"/>
+                                        <rect key="frame" x="0.0" y="679.66666666666663" width="390" height="54"/>
                                         <fontDescription key="fontDescription" name="YSDisplay-Bold" family="YS Display" pointSize="23"/>
                                         <color key="textColor" name="YP White"/>
                                         <nil key="highlightedColor"/>
@@ -77,6 +82,9 @@
                                                         <integer key="value" value="15"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="noButtonClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="t0Q-I1-zQD"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cw5-ru-Icp" userLabel="Yes Button">
                                                 <rect key="frame" x="205" y="0.0" width="185" height="60"/>
@@ -94,11 +102,13 @@
                                                         <integer key="value" value="15"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="yesButtonClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gjl-xr-a5C"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <constraints>
-                                            <constraint firstItem="cw5-ru-Icp" firstAttribute="height" secondItem="kOG-pr-g2t" secondAttribute="height" id="g2k-mE-VgO"/>
-                                            <constraint firstItem="cw5-ru-Icp" firstAttribute="width" secondItem="kOG-pr-g2t" secondAttribute="width" id="izm-If-xdT"/>
+                                            <constraint firstAttribute="height" constant="60" id="Ag5-9I-snN"/>
                                         </constraints>
                                     </stackView>
                                 </subviews>
@@ -116,7 +126,9 @@
                     <connections>
                         <outlet property="counterLabel" destination="fRf-8j-p9r" id="iOa-7H-MrM"/>
                         <outlet property="imageView" destination="Ra3-PI-DpK" id="vB8-m7-NPq"/>
+                        <outlet property="noButton" destination="kOG-pr-g2t" id="Vnr-wi-aaE"/>
                         <outlet property="textLabel" destination="1ic-Tk-yYv" id="FEG-Hb-YTi"/>
+                        <outlet property="yesButton" destination="cw5-ru-Icp" id="Vck-ER-1Is"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
