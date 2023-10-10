@@ -96,11 +96,9 @@ final class MovieQuizViewController: UIViewController {
         if isEnable == true {
             yesButton.isEnabled = false
             noButton.isEnabled = false
-            print("LOCK")
         } else {
             yesButton.isEnabled = true
             noButton.isEnabled = true
-            print("UNLOCK")
         }
     }
     
@@ -123,7 +121,8 @@ final class MovieQuizViewController: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             // Вызываем метод перехода на следующий экран
             self.showNextQuestionOrResults()
-            self.lockYesNoButtons(isEnable: false)
+            self.lockYesNoButtons(isEnable: false)                              // Сбрасываем блокировку кнопок ответа
+            self.imageView.layer.borderColor = UIColor.clear.cgColor            // Убираем рамку после показа следующего вопроса
         }
     }
     
@@ -237,6 +236,10 @@ final class MovieQuizViewController: UIViewController {
         /// 3. Выводим на экран UI-элементы со свойствами их View-модели
         show(quiz: questionOnScreen)                                                        // заполняем UI-элементы свойствами из View-модели
         
+    }
+    ///  Светлый стиль статус-бара
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent // .default для темного статус-бара
     }
 }
 
