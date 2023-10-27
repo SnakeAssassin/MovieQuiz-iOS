@@ -118,7 +118,8 @@ final class MovieQuizViewController: UIViewController {
             UIColor.ypRed.cgColor                                               // UIColor - расширение, ypGreen – цвет в расширении, cgColor – расширение для цвета
         
         // Запуск задачи через 1с с помощью диспетчера задач
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in  // [weak self] означает, что замыкание не повысит счетчик ссылок для переменной, а использует слабую ссылку
+            guard let self = self else { return }                               // Разворачиваем слабую ссылку (если не пустой – присвоить, иначе return)
             // Вызываем метод перехода на следующий экран
             self.showNextQuestionOrResults()
             self.lockYesNoButtons(isEnable: false)                              // Сбрасываем блокировку кнопок ответа
@@ -148,15 +149,17 @@ final class MovieQuizViewController: UIViewController {
             preferredStyle: .alert)                                         // Тип алерта: может быть .alert или .actionSheet
         
         /// 2. Создаём кнопку с действием Алерта через замыкание, в котором пишем, что должно происходить при нажатии на кнопку
-        let action = UIAlertAction(                                         // константа action – хранит кнопку для Алерта
-            title: result.buttonText, //"Сыграть ещё раз",                                       // Текст кнопки
-            style: .default) { _ in                                         // .default: Обычная кнопка действия.
-                                                                            // .cancel: Кнопка, которая обозначает отмену текущего действия.
-                                                                            // .destructive: действие, которое может иметь разрушительные последствия (например, удаление чего-либо).
-                                                                            // Далее пишется выполняемый код после нажатия кнопки
+        /// константа action – хранит кнопку для Алерта
+        /// title – текст кнопки
+        /// style – .default: Обычная кнопка действия; .cancel: Кнопка, которая обозначает отмену текущего действия; .destructive: действие, которое может иметь разрушительные последствия (например, удаление чего-либо)
+        /// Далее пишется выполняемый код после нажатия кнопки
+        /// Мы пишем замыкания внутри класса, в нашем случае — внутри MovieQuizViewController. Поэтому, чтобы обратиться к полям и функциям этого класса из замыкания, Swift потребует написать self.  Так как это не просто общие параметры замыкания, а именно поля и функции класса.
+        let action = UIAlertAction(
+            title: result.buttonText,
+            style: .default) { [weak self] _ in                             // [weak self] означает, что замыкание не повысит счетчик ссылок для переменной, а использует слабую ссылку
+                guard let self = self else { return }                       // Разворачиваем слабую ссылку (если не пустой – присвоить, иначе return)
                 self.currentQuestionIndex = 0                               // Обнуляем номер текущего вопроса
                 self.correctAnswers = 0                                     // Сбрасываем переменную с количеством правильных ответов
-                
                 // Запускаем стартовое вью
                 let firstQuestion = self.questions[self.currentQuestionIndex] // Считываем данные первого вопроса в массиве
                 let viewModel = self.convert(model: firstQuestion)          // Конвертируем данные для вью модели
@@ -222,7 +225,6 @@ final class MovieQuizViewController: UIViewController {
         
         showAnswerResult(isCorrect: givenAnswer == currentQuestion)               // Сравниваем ответ пользователя с правильным и записываем результат в метод
     }
-    
     
     
     // MARK: - viewDidLoad
