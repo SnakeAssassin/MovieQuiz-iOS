@@ -8,14 +8,9 @@
 import UIKit
 
 // Структура для хранения алерта
-struct AlertModel {
-    var title: String
-    var message: String
-    var buttonText: String
-    
-    init(title: String, message: String, buttonText: String){
-        self.title = title
-        self.message = message
-        self.buttonText = buttonText
-    }
+public struct AlertModel {
+    let title: String
+    let message: String
+    let buttonText: String
+    let completion: () -> Void
 }

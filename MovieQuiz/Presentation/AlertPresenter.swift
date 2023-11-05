@@ -7,24 +7,27 @@
 
 import UIKit
 
-class AlertPresenter: UIViewController, AlertPresenterProtocol {
-    
-    weak var delegate: AlertPresenterDelegate?
+class AlertPresenter {
 
-    func restartGame(model: AlertModel,
-                             viewController: MovieQuizViewController,
-                             completion: (() -> Void)?) {
-        let alertController = UIAlertController(title: model.title,
-                                                message: model.message,
-                                                preferredStyle: .alert)
+    let alertModel: AlertModel
+    weak var viewController: UIViewController?
 
-        let action = UIAlertAction(title: model.buttonText, style: .default) { [weak self] _ in
-            completion?()
-            self?.delegate?.didReceiveAlert()
+    init(alertModel: AlertModel, viewController: UIViewController) {
+        self.alertModel = alertModel
+        self.viewController = viewController
+    }
+
+    func showResultsAlert() {
+        let alert = UIAlertController(title: alertModel.title, message: alertModel.message, preferredStyle: .alert)
+        let action = UIAlertAction(title: alertModel.buttonText, style: .default) { /*[weak self]*/ _ in
+            self.alertModel.completion()
         }
+        
+        guard let viewController = viewController else { return }
+        alert.addAction(action)
+        viewController.present(alert, animated: true, completion: nil)
+    }
 
-        alertController.addAction(action)
-        viewController.present(alertController, animated: true, completion: nil)
-    } 
 }
+
 

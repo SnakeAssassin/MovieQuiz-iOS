@@ -10,6 +10,11 @@ import Foundation
 class QuestionFactory: QuestionFactoryProtocol {
     /// Свойство с делегатом, с которым будет общаться фабрика
     weak var delegate: QuestionFactoryDelegate?
+    
+    init(delegate: QuestionFactoryDelegate?) {
+        self.delegate = delegate
+    }
+    
     /// Массив структур с данными вопросов
     private let questions: [QuizQuestion] = [QuizQuestion(image: "The Godfather",
                                                           text: "Рейтинг этого фильма больше чем 6?",

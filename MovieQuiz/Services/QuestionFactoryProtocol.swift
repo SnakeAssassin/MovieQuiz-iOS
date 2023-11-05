@@ -8,7 +8,6 @@
 import Foundation
 
 protocol QuestionFactoryProtocol {
-    var delegate: QuestionFactoryDelegate? { get set }
     /// Заменяем func requestNextQuestion() -> QuizQuestion?
     /// Так как он не отдает вопрос сразу, а использует метод делегата, на:
     func requestNextQuestion()
