@@ -10,5 +10,10 @@ import Foundation
 protocol QuestionFactoryDelegate: AnyObject {
     /// Метод, который будет у делегата фабрики вопросов.
     /// Его вызывает фабрика, чтобы отдать готовый список вопросов.
-    func didReceiveNextQuestion(question: QuizQuestion?) 
+    func didReceiveNextQuestion(question: QuizQuestion?)
+    
+    /// Сообщение об успешной загрузке
+    func didLoadDataFromServer()
+    /// Сообщение об ошибке загрузки
+    func didFailToLoadData(with error: Error)
 }
