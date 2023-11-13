@@ -87,26 +87,6 @@ class QuestionFactory: QuestionFactoryProtocol {
     ]*/
     
     
-/*
-    
-    /// 1.      Метод ничего не принимает и возращает вопрос сразу, а передает его делегату QuestionFactoryDelegate в функцию didReceiveNextQuestion(question: )
-    ///     Опциональная, так как, если массив questions пуст, то приложение бы упало, иначе вернется nil, если получить следующий вопрос невозможно.
-    /// 2.      Выбираем случайный индекс вопроса из массива от 0 до последнего индекса.
-    ///     оператор меньше т.к. последний элемент будет 10, а счет массива 0 до 9, поэтому оператор меньше возьмет значение за n-1
-    ///     Функция randomElement случайно выберет число и вернет опционал, который безопасно распаковывается через guard let.
-    /// 3.      Вызов расширения (Array+Extensions) через subscript [safe: index].
-    ///     Расширение проверяет не выходит ли индекс за рамки массива (возвращает значение в этом индексе) и вместо падения приложения вернет nil.
-    func requestNextQuestion() {   // 1
-        guard let index = (0..<questions.count).randomElement() else {    // 2
-            /// иначе передает nil делегату QuestionFactoryDelegate в функцию didReceiveNextQuestion(question: )
-            delegate?.didReceiveNextQuestion(question: nil)
-            return
-        }
-        /// Если questions не пустой, то вызывается метод делегата и передается модель вопроса в него
-        let question = questions[safe: index]   // 3
-        delegate?.didReceiveNextQuestion(question: question)
-    } */
-    
     func requestNextQuestion() {
         
         /// Работа с изображениями и сетью должна быть в отдельном потоке, чтобы не блокировать основной поток, поэтому запускаем асинхронно в другом потоке через global()
@@ -146,9 +126,5 @@ class QuestionFactory: QuestionFactoryProtocol {
             }
         }
     }
-    
-    
-    
-    
 }
 

@@ -8,7 +8,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private var currentQuestionIndex = 0                        // Переменная с индексом текущего вопроса
     private var correctAnswers = 0                              // Переменная со счетчиком правильных ответов
-    private let questionAmount: Int = 10                         // Общее количество вопросов для квиза
+    private let questionAmount: Int = 1                         // Общее количество вопросов для квиза
     
     private var currentQuestion: QuizQuestion?                  // Вопрос, который видит пользователь
     private var questionFactory: QuestionFactoryProtocol?       // Инъекция через свойство делегата фабрики вопросов, в контроллере создаем экземпляр questionFactory с типом протокола QuestionFactoryProtocol
@@ -223,10 +223,9 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             if let statisticService = statisticService {
                 statisticService.store(correct: correctAnswers, total: questionAmount)
                 
-                let text = "Ваш результат: \(correctAnswers)/\(questionAmount)\n" +
-                "Количество сыграных квизов: \(statisticService.gamesCount)\n" +
-                "Рекорд: \(statisticService.bestGame.correct)/\(statisticService.bestGame.total) \(statisticService.bestGame.date) \n" +
-                "Средняя точность: \(String(format: "%.2f", statisticService.averageAccuracy))%"
+                let text = """
+                Ваш результат: \(correctAnswers)/\(questionAmount)\nКоличество сыграных квизов: \(statisticService.gamesCount)\n Рекорд: \(statisticService.bestGame.correct)/\(statisticService.bestGame.total) \(statisticService.bestGame.date) \n Средняя точность: \(String(format: "%.2f", statisticService.averageAccuracy))%
+                """
                 
                 let viewModel = QuizResultsViewModel(
                     title: "Этот раунд окончен!",

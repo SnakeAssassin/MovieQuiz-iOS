@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AlertPresenter {
+final class AlertPresenter {
 
     let alertModel: AlertModel
     weak var viewController: UIViewController?
@@ -27,7 +27,4 @@ class AlertPresenter {
         alert.addAction(action)
         viewController.present(alert, animated: true, completion: nil)
     }
-
 }
-
-
