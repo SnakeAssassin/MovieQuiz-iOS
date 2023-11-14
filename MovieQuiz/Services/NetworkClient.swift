@@ -26,7 +26,6 @@ struct NetworkClient {
             if let error = error {  // Проверяем, пришла ли ошибка
                 handler(.failure(error))
                 return  // Если ошибка - завершаем код
-                
             }
             
             /// 5. Обрабатываем код ответа

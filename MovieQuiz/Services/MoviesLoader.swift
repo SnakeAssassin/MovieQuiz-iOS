@@ -21,7 +21,6 @@ struct MoviesLoader: MoviesLoadingProtocol {
     private var mostPopularMoviesUrl: URL {
         // Если не получится преобразовать строку в URL, то приложение упадет с ошибкой
         guard let url = URL(string: "https://imdb-api.com/en/API/Top250Movies/k_zcuw1ytf") else {
-            print("ссылка неверная")
             preconditionFailure("Unable to construct mostPopularMoviesUrl")
         }
         return url
