@@ -5,7 +5,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     // MARK: - Variables
     override var preferredStatusBarStyle: UIStatusBarStyle { return .lightContent } // Светлый статус-бар
-    
+    //
     private var currentQuestionIndex = 0                        // Переменная с индексом текущего вопроса
     private var correctAnswers = 0                              // Переменная со счетчиком правильных ответов
     private let questionAmount: Int = 10                         // Общее количество вопросов для квиза
