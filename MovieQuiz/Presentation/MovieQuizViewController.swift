@@ -8,7 +8,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private var currentQuestionIndex = 0                        // Переменная с индексом текущего вопроса
     private var correctAnswers = 0                              // Переменная со счетчиком правильных ответов
-    private let questionAmount: Int = 1                         // Общее количество вопросов для квиза
+    private let questionAmount: Int = 10                         // Общее количество вопросов для квиза
     
     private var currentQuestion: QuizQuestion?                  // Вопрос, который видит пользователь
     private var questionFactory: QuestionFactoryProtocol?       // Инъекция через свойство делегата фабрики вопросов, в контроллере создаем экземпляр questionFactory с типом протокола QuestionFactoryProtocol
@@ -20,13 +20,11 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     /// Изображение создано и готово к показу: "Вопрос показан"
     override func viewDidLoad() {
         super.viewDidLoad()
-        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), errorMessage: "", delegate: self)        // Связывает делегат questionFactory с viewDidLoad()
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)        // Связывает делегат questionFactory с viewDidLoad()
         statisticService = StatisticServiceImplementation()     // Заполняем statisticService после инициализации
         showLoadingIndicator()                                  // Показываем индикатор загрузки
         questionFactory?.loadData()                             // Начинаем загрузку данных
         //questionFactory?.requestNextQuestion()                   // Отображение первого вопроса
-        
-        
     }
     
     
@@ -61,8 +59,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         let givenAnswer = false
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
-
-
+    
+    
     // MARK: - Delegates
     /// Добавляем метод для удовлетворения требований подписки на протокол QuestionFactoryDelegate
     /// Класс контроллера подписан на протокол делегата фабрики QuestionFactoryDelegate и реализует метод протокола didReceiveNextQuestion(question: QuizQuestion?)
@@ -71,7 +69,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         guard let question = question else {
             return
         }
-
+        
         currentQuestion = question
         let viewModel = convert(model: question)
         /// UI обязательно обновляется из главного потока, но так как фабрика грузит вопросы из сети
@@ -108,15 +106,14 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         activityIndicator.isHidden = true
     }
     
-    /// Алерт о состоянии ошибки при вызове URL-запроса
-    /// все передано через алерт модель и completion
+    /// Алерт о состоянии ошибки при вызове URL-запроса или получении errorMesage от API
     private func showNetworkError(message: String) {
-        hideLoadingIndicator()
+        showLoadingIndicator()
         
         let completion = {
             self.currentQuestionIndex = 0
             self.correctAnswers = 0
-            self.questionFactory?.requestNextQuestion()
+            self.questionFactory?.loadData()
         }
         
         let alertModel = AlertModel(
@@ -125,63 +122,28 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             buttonText: "Попробовать еще раз",
             completion: completion)
         
-        let alertPresenter = AlertPresenter(alertModel: alertModel, viewController: self)
-        alertPresenter.showResultsAlert()
+        show(quiz: alertModel)
     }
     
-    /// Показа алерта: Сообщение об ошибке загрузки
+    /// Вызов алерта: Сообщение об ошибке загрузки
     func didFailToLoadData(with error: Error) {
         /// Передаем описание ошибки error через NSError в Алерт презентер
         showNetworkError(message: error.localizedDescription)
     }
     
+    /// Вызов алерта: Сообщение об ошибки от API
+    func didLoadErrorFromAPI(with errorMessage: String) {
+        /// Передаем ошибку в Алерт презентер
+        showNetworkError(message: errorMessage)
+    }
+    
     /// Сообщение об успешной загрузке
     func didLoadDataFromServer() {
-        /// Если пришло сообщение от API errorMessage - выводим алерт
-        if questionFactory?.errorMessage != "" {
-            didLoadErrorFromAPI()
-            return
-        
-        } else {
-            
-            activityIndicator.isHidden = true       // Скрываем индикатор загрузки
-            questionFactory?.requestNextQuestion()  // Выводим вопрос
-        }
+        activityIndicator.isHidden = true       // Скрываем индикатор загрузки
+        questionFactory?.requestNextQuestion()  // Выводим вопрос
     }
     
-    /// Алерт при получении ошибки от API errorMessage
-    /// все передано через алерт модель и completion
-    private func showApiErrorMessage(message: String) {
-        showLoadingIndicator()
-        
-        let completion = {
-            self.currentQuestionIndex = 0
-            self.correctAnswers = 0
-            //self.questionFactory?.requestNextQuestion()
-            self.questionFactory?.loadData()
-            
-        }
-        
-        let alertModel = AlertModel(
-            title: "Ошибка API",
-            message: message,
-            buttonText: "Попробовать еще раз",
-            completion: completion)
-        
-        let alertPresenter = AlertPresenter(alertModel: alertModel, viewController: self)
-        alertPresenter.showResultsAlert()
-    }
-    
-    /// Показ алерта: Сообщение об ошибки от API
-    func didLoadErrorFromAPI() {
-            guard let error = questionFactory?.errorMessage else {
-                return
-            }
-        showApiErrorMessage(message: error)
-            print("Error from API: \(questionFactory!.errorMessage)")
-    }
-    
-    /// Выводит следующий вопрос или результат
+    /// Показать ответ и перейти к следующему вопросу
     private func showAnswerResult(isCorrect: Bool) {
         if isCorrect {
             correctAnswers += 1
@@ -205,7 +167,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             image: UIImage(data: model.image) ?? UIImage(),
             question: model.text,
             questionNumber: "\(currentQuestionIndex + 1)/\(questionAmount)")
-            return questionStep
+        return questionStep
     }
     
     /// Конвертирует QuizStepViewModel -> UIViewController
@@ -215,7 +177,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         counterLabel.text = step.questionNumber
     }
     
-    /// Следующий вопрос или вывод результата
+    /// Показать следующий вопрос или вывести результат
     private func showNextQuestionOrResults() {
         /// Если все вопросы показаны – выводим Алерт
         if currentQuestionIndex == questionAmount - 1 {
@@ -223,38 +185,40 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             if let statisticService = statisticService {
                 statisticService.store(correct: correctAnswers, total: questionAmount)
                 
+                let completion = {
+                    self.currentQuestionIndex = 0
+                    self.correctAnswers = 0
+                    self.questionFactory?.requestNextQuestion()
+                }
+                
                 let text = """
                 Ваш результат: \(correctAnswers)/\(questionAmount)\nКоличество сыграных квизов: \(statisticService.gamesCount)\n Рекорд: \(statisticService.bestGame.correct)/\(statisticService.bestGame.total) \(statisticService.bestGame.date) \n Средняя точность: \(String(format: "%.2f", statisticService.averageAccuracy))%
                 """
                 
-                let viewModel = QuizResultsViewModel(
+                let viewModel = AlertModel(
                     title: "Этот раунд окончен!",
-                    text: text,
-                    buttonText: "Сыграть ещё раз")
+                    message: text,
+                    buttonText: "Сыграть ещё раз",
+                    completion: completion)
                 show(quiz: viewModel)
             }
-        /// Если не последний вопрос, то показываем следующий следующий вопрос от Фабрики вопросов
+            /// Если не последний вопрос, то показываем следующий следующий вопрос от Фабрики вопросов
         } else {
             currentQuestionIndex += 1
             self.questionFactory?.requestNextQuestion()
         }
     }
     
-    /// Вывод результата через Алерт презентер
-    private func show(quiz result: QuizResultsViewModel) {
-        let completion = {
-            self.currentQuestionIndex = 0
-            self.correctAnswers = 0
-            self.questionFactory?.requestNextQuestion()
-        }
-        
+    /// Вывод данных через Алерт презентер
+    private func show(quiz result: AlertModel) {
+
         let alertModel = AlertModel(
             title: result.title,
-            message: result.text,
+            message: result.message,
             buttonText: result.buttonText,
-            completion: completion)
+            completion: result.completion)
         
         let alertPresenter = AlertPresenter(alertModel: alertModel, viewController: self)
-        alertPresenter.showResultsAlert()
-    }    
+        alertPresenter.showAlert()
+    }
 }

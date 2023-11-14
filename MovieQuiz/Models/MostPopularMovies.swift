@@ -26,18 +26,13 @@ struct MostPopularMovie: Codable {
         // Обрезаем лишнюю часть и добавляем модификатор желаемого качества
         let imageUrlString = urlString.components(separatedBy: "._")[0] + "._V0_UX600_.jpg"
         
-        
-        
         // Пытаемся создать новый адрес, если не получается - возвращаем старый
         guard let newURL = URL(string: imageUrlString) else {
             return imageURL
         }
-        
         return newURL
     }
-    
-    
-    
+      
     /// Так как имена полей JSON не совпадают с именами структуры, через enum указываем какое поле структуры соответствует полю в JSON
     private enum CodingKeys: String, CodingKey {
         case title = "fullTitle"

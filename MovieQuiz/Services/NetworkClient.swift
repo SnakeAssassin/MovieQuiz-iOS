@@ -25,7 +25,6 @@ struct NetworkClient {
             /// 4. Распаковываем ошибку
             if let error = error {  // Проверяем, пришла ли ошибка
                 handler(.failure(error))
-                print("код завершен - пришла ошибка")
                 return  // Если ошибка - завершаем код
                 
             }
@@ -34,7 +33,6 @@ struct NetworkClient {
             if let response = response as? HTTPURLResponse, // Проверяем, что нам пришёл успешный код ответа
                 response.statusCode < 200 || response.statusCode >= 300 {
                 handler(.failure(NetworkError.codeError))
-                print("код завершен - пришел код")
                 return  // Если код - завершаем код
             }
             

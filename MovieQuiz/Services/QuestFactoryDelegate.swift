@@ -16,4 +16,6 @@ protocol QuestionFactoryDelegate: AnyObject {
     func didLoadDataFromServer()
     /// Сообщение об ошибке загрузки
     func didFailToLoadData(with error: Error)
+    /// Сообщение об ошибке от API
+    func didLoadErrorFromAPI(with error: String)
 }

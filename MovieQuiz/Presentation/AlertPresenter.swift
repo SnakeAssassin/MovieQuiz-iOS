@@ -17,7 +17,7 @@ final class AlertPresenter {
         self.viewController = viewController
     }
 
-    func showResultsAlert() {
+    func showAlert() {
         let alert = UIAlertController(title: alertModel.title, message: alertModel.message, preferredStyle: .alert)
         let action = UIAlertAction(title: alertModel.buttonText, style: .default) { /*[weak self]*/ _ in
             self.alertModel.completion()
