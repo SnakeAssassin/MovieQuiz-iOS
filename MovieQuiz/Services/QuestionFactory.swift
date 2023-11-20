@@ -99,12 +99,10 @@ class QuestionFactory: QuestionFactoryProtocol {
             var imageData = Data()  // создаем пустой объект типа Data
             
             do {
-                
                 imageData = try Data(contentsOf: movie.resizedImageURL)    // Пробуем загрузить данные по URL
             } catch {
-                
+                /// Если не удалось загрузить изображение, то выводим ошибку
                 self.delegate?.didFailToLoadData(with: error)
-                print("Failed to load image")                              // Если неуспешно, то выводим ошибку
             }
             
             /// Создаем вопрос, определяем корректность и создаем модель вопроса

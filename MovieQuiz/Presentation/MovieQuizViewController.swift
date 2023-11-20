@@ -6,15 +6,14 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // MARK: - Variables
     override var preferredStatusBarStyle: UIStatusBarStyle { return .lightContent } // Светлый статус-бар
     //
-    private var currentQuestionIndex = 0                        // Переменная с индексом текущего вопроса
+    
     private var correctAnswers = 0                              // Переменная со счетчиком правильных ответов
-    private let questionAmount: Int = 10                         // Общее количество вопросов для квиза
+    
     
     private var currentQuestion: QuizQuestion?                  // Вопрос, который видит пользователь
     private var questionFactory: QuestionFactoryProtocol?       // Инъекция через свойство делегата фабрики вопросов, в контроллере создаем экземпляр questionFactory с типом протокола QuestionFactoryProtocol
     private var statisticService: StatisticServiceProtocol?     // Экземпляр класса StatisticServiceImplementation, реализующего протокол StatisticServiceProtocol
-    
-    
+    private let presenter = MovieQuizPresenter()                // Экземпляр MVP
     
     // MARK: - Lifecycle
     /// Изображение создано и готово к показу: "Вопрос показан"
@@ -71,7 +70,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         }
         
         currentQuestion = question
-        let viewModel = convert(model: question)
+        let viewModel = presenter.convert(model: question)
         /// UI обязательно обновляется из главного потока, но так как фабрика грузит вопросы из сети
         /// поэтому указываем вызов метода didReceiceNextQuestion  в главном потоке
         /// В случае с DispatchQueue.main использование [weak self] некритично из-за особенностей работы главного потока. Значит, вы можете добавлять [weak self] везде, где есть self.
@@ -111,8 +110,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         showLoadingIndicator()
         
         let completion = {
-            self.currentQuestionIndex = 0
-            self.correctAnswers = 0
             self.questionFactory?.loadData()
         }
         
@@ -159,17 +156,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             self.imageView.layer.borderColor = UIColor.clear.cgColor
         }
     }
-    
-    /// Конвертирует QuizQuestion -> QuizStepViewModel
-    private func convert(model: QuizQuestion) -> QuizStepViewModel {
-        
-        let questionStep = QuizStepViewModel(
-            image: UIImage(data: model.image) ?? UIImage(),
-            question: model.text,
-            questionNumber: "\(currentQuestionIndex + 1)/\(questionAmount)")
-        return questionStep
-    }
-    
+       
     /// Конвертирует QuizStepViewModel -> UIViewController
     private func show(quiz step: QuizStepViewModel) {
         imageView.image = step.image
@@ -180,19 +167,19 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     /// Показать следующий вопрос или вывести результат
     private func showNextQuestionOrResults() {
         /// Если все вопросы показаны – выводим Алерт
-        if currentQuestionIndex == questionAmount - 1 {
+        if presenter.isLastQuestion() {
             //
             if let statisticService = statisticService {
-                statisticService.store(correct: correctAnswers, total: questionAmount)
+                statisticService.store(correct: correctAnswers, total: presenter.questionAmount)
                 
                 let completion = {
-                    self.currentQuestionIndex = 0
+                    self.presenter.resetQuestionIndex()
                     self.correctAnswers = 0
                     self.questionFactory?.requestNextQuestion()
                 }
                 
                 let text = """
-                Ваш результат: \(correctAnswers)/\(questionAmount)\nКоличество сыграных квизов: \(statisticService.gamesCount)\n Рекорд: \(statisticService.bestGame.correct)/\(statisticService.bestGame.total) \(statisticService.bestGame.date) \n Средняя точность: \(String(format: "%.2f", statisticService.averageAccuracy))%
+                Ваш результат: \(correctAnswers)/\(presenter.questionAmount)\nКоличество сыграных квизов: \(statisticService.gamesCount)\n Рекорд: \(statisticService.bestGame.correct)/\(statisticService.bestGame.total) \(statisticService.bestGame.date) \n Средняя точность: \(String(format: "%.2f", statisticService.averageAccuracy))%
                 """
                 
                 let viewModel = AlertModel(
@@ -204,7 +191,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             }
             /// Если не последний вопрос, то показываем следующий следующий вопрос от Фабрики вопросов
         } else {
-            currentQuestionIndex += 1
+            presenter.switchToNextQuestion()
             self.questionFactory?.requestNextQuestion()
         }
     }

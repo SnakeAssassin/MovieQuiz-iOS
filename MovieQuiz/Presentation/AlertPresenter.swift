@@ -25,6 +25,10 @@ final class AlertPresenter {
         
         guard let viewController = viewController else { return }
         alert.addAction(action)
+        
+        // Передаем идентификатор алерту для тестов
+        alert.view.accessibilityIdentifier = "Alert"
+        
         viewController.present(alert, animated: true, completion: nil)
     }
 }
