@@ -5,6 +5,7 @@
 //  Created by Joe Kramer on 18.11.2023.
 //
 
+/// UI-тест MovieQuiz
 import XCTest
 
 @testable import MovieQuiz
@@ -33,8 +34,7 @@ final class MovieQuizUITests: XCTestCase {
         app = nil
     }
 
-    /// Код теста
-    
+    /// Тест работоспособности кнопки "Yes"
     func testYesButton() {
         /// Задержка для загрузки данных JSON
         sleep(3)
@@ -43,7 +43,6 @@ final class MovieQuizUITests: XCTestCase {
         /// Делаем скриншот UI-элемента Poster и сохраняем байты в переменную
         /// Вычисляемое свойство pngRepresentation возвращает нам скриншот в виде данных (тип Data).
         let firstPosterData = firstPoster.screenshot().pngRepresentation
-        
         
         // Нажимаем на кнопку по AccessibilityIdentifier идентификатору
         app.buttons["Yes"].tap()
@@ -54,7 +53,6 @@ final class MovieQuizUITests: XCTestCase {
         let secondPoster = app.images["Poster"]
         let secondPosterData = secondPoster.screenshot().pngRepresentation
         
-        
         // Считываем номер вопроса
         let indexLabel = app.staticTexts["Index"]
         
@@ -64,59 +62,53 @@ final class MovieQuizUITests: XCTestCase {
         XCTAssertEqual(indexLabel.label, "2/10")
     }
     
+    /// Тест работоспособности кнопки "No"
     func testNoButton() {
-        /// Задержка для загрузки данных JSON
+
         sleep(3)
-        /// Находим первоначальный постер по AccessibilityIdentifier идентификатору
+
         let firstPoster = app.images["Poster"]
-        /// Делаем скриншот UI-элемента Poster и сохраняем байты в переменную
-        /// Вычисляемое свойство pngRepresentation возвращает нам скриншот в виде данных (тип Data).
         let firstPosterData = firstPoster.screenshot().pngRepresentation
         
-        
-        // Нажимаем на кнопку по AccessibilityIdentifier идентификатору
         app.buttons["No"].tap()
-        
-        // Задержка для загрузки второй картинки из сети
+
         sleep(3)
         
         let secondPoster = app.images["Poster"]
         let secondPosterData = secondPoster.screenshot().pngRepresentation
-        
-        
-        // Считываем номер вопроса
         let indexLabel = app.staticTexts["Index"]
         
-        // Проверяем, что постеры имеют разный вес с точностью до байта
         XCTAssertNotEqual(firstPosterData, secondPosterData)
-        /// Проверяем соответствие текста через свойство indexLabel.label
         XCTAssertEqual(indexLabel.label, "2/10")
     }
     
-   
-    
+    /// Тест появления Алерта
     func testAlertEndGame() {
         sleep(1)
+        
         for _ in 1...10 {
             app.buttons["No"].tap()
-            sleep(1)
+            sleep(2)
         }
         
-        let alert = app.alerts["Alert"]
+        sleep(3)
         
-        XCTAssertTrue(alert.exists)
+        let alert = app.alerts["AlertIdentifier"]
+        
         XCTAssertEqual(alert.label, "Этот раунд окончен!")
         XCTAssertEqual(alert.buttons.firstMatch.label, "Сыграть ещё раз")
+        XCTAssertTrue(alert.exists)
     }
     
+    /// Тест создания новой игры по нажатию на кнопку Алерта
     func testNewGame() {
         sleep(1)
         for _ in 1...10 {
             app.buttons["No"].tap()
-            sleep(1)
+            sleep(2)
         }
         
-        let alert = app.alerts["Alert"]
+        let alert = app.alerts["AlertIdentifier"]
         
         XCTAssertTrue(alert.exists)
         alert.buttons.firstMatch.tap()
@@ -125,18 +117,9 @@ final class MovieQuizUITests: XCTestCase {
         
         let indexLabel = app.staticTexts["Index"]
         XCTAssertEqual(indexLabel.label, "1/10")
-
     }
     
-    
-    func testExample() throws {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
-        app.launch()
-
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
+    // Тест производительности
     func testLaunchPerformance() throws {
         if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
             // This measures how long it takes to launch your application.

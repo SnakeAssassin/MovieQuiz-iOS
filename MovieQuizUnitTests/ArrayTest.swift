@@ -5,6 +5,7 @@
 //  Created by Joe Kramer on 16.11.2023.
 //
 
+/// Тест Array+Extension
 import XCTest
 
 /// Импортируем приложение для тестирования
@@ -32,5 +33,4 @@ final class ArrayTest: XCTestCase {
         // Then
         XCTAssertNil(value)         // Вернуло nil
     }
-    
 }

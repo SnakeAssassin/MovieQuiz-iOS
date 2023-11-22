@@ -5,24 +5,25 @@
 //  Created by Joe Kramer on 16.11.2023.
 //
 
+/// UNIT-тесты MoviesLoader через стаб NetworkClient
 import XCTest
 @testable import MovieQuiz
 
 final class MoviesLoaderTest: XCTestCase {
+    
+    /// Проверка успешной загрузки через моковый стаб
     func testSuccessLoading() throws {
-        // Given
+        /// Given
         // Создаем экземпляр стаба NetworkClient
         let stubNetworkClient = StubNetworkClient(emulateError: false) // говорим, что не хотим эмулировать ошибку
         // Создаем экземпляр загрузчика и указываем
-        
         let loader = MoviesLoader(networkClient: stubNetworkClient)
         
-        // When
+        /// When
         let expectation = expectation(description: "Loading expectation")
         
-        
         loader.loadMovies { result in
-            // Then
+            /// Then
             switch result {
             case .success(let movies):
                 // Сравниваем данные с тем, что мы ожидали
@@ -37,6 +38,7 @@ final class MoviesLoaderTest: XCTestCase {
         waitForExpectations(timeout: 1)
     }
     
+    /// Проверка неуспешной загрузки, через имитацию ошибки
     func testFailureLoading() throws {
         // Given
         let stubNetworkClient = StubNetworkClient(emulateError: true) // говорим, что хотим эмулировать ошибку
