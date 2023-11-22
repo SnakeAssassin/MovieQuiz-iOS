@@ -11,4 +11,6 @@ protocol QuestionFactoryProtocol {
     /// Заменяем func requestNextQuestion() -> QuizQuestion?
     /// Так как он не отдает вопрос сразу, а использует метод делегата, на:
     func requestNextQuestion()
+    /// Инициализирует загрузку данных
+    func loadData()
 }

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+/*
 /// View-модель для состояния "Результат квиза"
 struct QuizResultsViewModel {
   // строка с заголовком алерта
@@ -15,4 +15,7 @@ struct QuizResultsViewModel {
   let text: String
   // текст для кнопки алерта
   let buttonText: String
+  // вызов функций по кнопке
+  let completion: () -> Void
 }
+*/
