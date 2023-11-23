@@ -15,7 +15,12 @@ protocol MoviesLoadingProtocol {
 /// Загрузчик, реализующий этот протокол
 struct MoviesLoader: MoviesLoadingProtocol {
     /// Создаем экземпляр NetworkClient, через который будем создавать запросы к API
-    private let networkClient = NetworkClient()
+    /// переменная networkClient — это протокол, а не его конкретная реализация. Сама же реализация протокола передаётся через конструктор структуры.
+    private let networkClient: NetworkRouting
+    
+    init(networkClient: NetworkRouting = NetworkClient()) {
+        self.networkClient = networkClient
+    }
     
     /// URL
     private var mostPopularMoviesUrl: URL {

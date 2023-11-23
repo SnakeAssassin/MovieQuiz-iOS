@@ -19,12 +19,19 @@ final class AlertPresenter {
 
     func showAlert() {
         let alert = UIAlertController(title: alertModel.title, message: alertModel.message, preferredStyle: .alert)
+        
+        // Передаем идентификатор алерту для тестов
+        if let alertView = alert.view {
+            alertView.accessibilityIdentifier = "AlertIdentifier"
+        }
+        
         let action = UIAlertAction(title: alertModel.buttonText, style: .default) { /*[weak self]*/ _ in
             self.alertModel.completion()
         }
         
         guard let viewController = viewController else { return }
         alert.addAction(action)
+        
         viewController.present(alert, animated: true, completion: nil)
     }
 }
